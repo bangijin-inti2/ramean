@@ -1,0 +1,275 @@
+.app-shell {
+  margin: 0 auto;
+  max-width: 1180px;
+  min-height: 100vh;
+  padding: 0 28px;
+}
+
+.app-header {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  min-height: 76px;
+}
+
+.app-nav {
+  display: flex;
+  flex: 1;
+  gap: 15px;
+  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.app-nav a {
+  color: var(--muted);
+  font-size: .86rem;
+}
+
+.app-nav a:hover,
+.app-nav a:focus-visible {
+  color: var(--accent);
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-brand img {
+  height: 40px;
+  width: auto;
+}
+
+.signout-button {
+  min-height: 38px;
+}
+
+.app-main {
+  padding: 34px 0 48px;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .82rem;
+  padding: 18px 0 28px;
+}
+
+.finance-page {
+  display: grid;
+  gap: 22px;
+}
+
+.finance-heading {
+  align-items: end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.finance-heading h1 {
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  letter-spacing: -.04em;
+  margin: 0;
+}
+
+.finance-heading p {
+  margin: 7px 0 0;
+}
+
+.finance-heading .finance-field {
+  max-width: 300px;
+  min-width: 220px;
+}
+
+.finance-columns {
+  align-items: start;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(290px, .8fr);
+}
+
+.finance-panel {
+  min-width: 0;
+  padding: 22px;
+}
+
+.finance-panel h2 {
+  font-size: 1.13rem;
+  margin: 0 0 16px;
+}
+
+.finance-form {
+  display: grid;
+  gap: 15px;
+}
+
+.finance-field {
+  display: grid;
+  font-size: .87rem;
+  font-weight: 600;
+  gap: 7px;
+}
+
+.finance-field > span {
+  color: var(--muted);
+}
+
+.finance-list {
+  display: grid;
+}
+
+.finance-list-row {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 14px 0;
+}
+
+.finance-list-row:first-child {
+  padding-top: 0;
+}
+
+.finance-list-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.finance-list-row > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.finance-list-row > strong {
+  white-space: nowrap;
+}
+
+.finance-list-row .income {
+  color: var(--accent);
+}
+
+.finance-list-row .expense {
+  color: #ff9aab;
+}
+
+.finance-empty {
+  margin: 0;
+}
+
+.finance-readonly {
+  margin: -8px 0 0;
+}
+
+.finance-budget {
+  border-bottom: 1px solid var(--border);
+  padding: 15px 0;
+}
+
+.finance-budget:first-child {
+  padding-top: 0;
+}
+
+.finance-budget:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.finance-budget progress {
+  accent-color: var(--accent);
+  height: 9px;
+  margin: 10px 0 4px;
+  width: 100%;
+}
+
+.text-button {
+  background: transparent;
+  border: 0;
+  color: var(--accent);
+  min-height: 32px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.finance-filter,
+.report-summary {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+
+.report-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.report-summary article {
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.report-summary strong {
+  font-size: clamp(.95rem, 2vw, 1.15rem);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .app-nav {
+    gap: 11px;
+  }
+
+  .app-nav a {
+    font-size: .78rem;
+  }
+
+  .finance-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 0 16px;
+  }
+
+  .app-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .app-nav {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    order: 3;
+    padding-bottom: 4px;
+  }
+
+  .finance-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .finance-heading .finance-field {
+    max-width: none;
+  }
+
+  .finance-panel {
+    padding: 17px;
+  }
+
+  .report-summary {
+    grid-template-columns: 1fr;
+  }
+}
