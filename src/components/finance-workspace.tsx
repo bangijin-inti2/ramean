@@ -21,7 +21,7 @@ type RpcOperation = () => PromiseLike<RpcResult>;
 const sectionTitles: Record<Section, string> = {
   wallets: "Dompet",
   transactions: "Transaksi",
-  posts: "Post",
+  posts: "Pos dana",
   budgets: "Anggaran",
   reports: "Laporan",
   space: "Ruang bersama",
@@ -105,17 +105,6 @@ export function FinanceWorkspace({ section }: { section: Section }) {
           <h1>{section === "space" ? workspace.context.name : sectionTitles[section]}</h1>
           <p className="muted">{workspace.context.context_type === "shared" ? "Ruang bersama" : "Ruang pribadi"} · {workspace.context.name}</p>
         </div>
-        <Field label="Pilih ruang">
-          <select
-            aria-label="Pilih ruang keuangan"
-            onChange={(event) => workspace.setContextId(event.target.value)}
-            value={workspace.context.id}
-          >
-            {workspace.contexts.map((context) => (
-              <option key={context.id} value={context.id}>{context.name}</option>
-            ))}
-          </select>
-        </Field>
       </header>
 
       {workspace.error && <p className="error-message">{workspace.error}</p>}

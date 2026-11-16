@@ -23,12 +23,18 @@ export function SharedSpace({ workspace }: { workspace: Workspace }) {
       p_name: String(form.get("name")).trim(), p_kind: kind,
       p_purpose: kind === "couple" ? "general" : form.get("purpose"),
     }), "Ruang dibuat. Pilih ruang tersebut dari pilihan ruang.");
-    if (result?.value?.id) workspace.setContextId(result.value.id);
+    if (result?.value?.id) {
+      workspace.setContextId(result.value.id);
+      window.location.reload();
+    }
   }
   async function join(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget);
     const result = await action.run(() => createClient().rpc("accept_household_invitation", { p_token: String(form.get("token")).trim() }), "Berhasil bergabung.");
-    if (result?.value) workspace.setContextId(String(result.value));
+    if (result?.value) {
+      workspace.setContextId(String(result.value));
+      window.location.reload();
+    }
   }
   return <div className="extended-workspace">
     {action.feedback}

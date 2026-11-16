@@ -13,6 +13,18 @@
   --gold: #facc15;
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #ecfdf5;
+  --panel: #ffffff;
+  --panel-raised: #f4fbf7;
+  --border: #bfe8d2;
+  --muted: #426454;
+  --accent: #16a675;
+  --accent-strong: #16a675;
+  --text: #152e24;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--text);
@@ -120,6 +132,18 @@ a:focus-visible {
   border-radius: 9px;
   color: #c9ffed;
   padding: 12px 14px;
+}
+
+:root[data-theme="light"] .error-message {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #9f1239;
+}
+
+:root[data-theme="light"] .success-message {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
 }
 
 .auth-page {

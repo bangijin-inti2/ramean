@@ -1,8 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signOut } from "./actions";
 import { createClient } from "@/lib/supabase/server";
+import { AppSidebar } from "@/components/app-sidebar";
 import "./app.css";
 
 export default async function AppLayout({
@@ -12,27 +10,30 @@ export default async function AppLayout({
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims?.sub) redirect("/login");
 
+  const [{ data: contextRows, error: contextsError }, { data: profile, error: profileError }] =
+    await Promise.all([
+      supabase
+        .from("financial_contexts")
+        .select("id,name,context_type,space_kind")
+        .order("created_at")
+        .order("id"),
+      supabase.from("profiles").select("display_name").eq("id", data.claims.sub).maybeSingle(),
+    ]);
+
+  if (contextsError) throw new Error("Ruang keuangan belum dapat dimuat.");
+  if (profileError) throw new Error("Profil belum dapat dimuat.");
+
+  const contexts = contextRows ?? [];
+  const userLabel = profile?.display_name ||
+    (typeof data.claims.email === "string" ? data.claims.email : "Pengguna");
+
   return (
     <div className="app-shell">
-      <header className="app-header">
-        <Link aria-label="Ramean, ringkasan" className="app-brand" href="/dashboard">
-          <Image alt="Ramean" height={44} priority src="/ramean-logo-dark.svg" width={142} />
-        </Link>
-        <nav aria-label="Navigasi utama" className="app-nav">
-          <Link href="/dashboard">Ringkasan</Link>
-          <Link href="/wallets">Dompet</Link>
-          <Link href="/transactions">Transaksi</Link>
-          <Link href="/posts">Post</Link>
-          <Link href="/budgets">Anggaran</Link>
-          <Link href="/reports">Laporan</Link>
-          <Link href="/space">Ruang bersama</Link>
-        </nav>
-        <form action={signOut}>
-          <button className="secondary-button signout-button" type="submit">Keluar</button>
-        </form>
-      </header>
-      <main className="app-main">{children}</main>
-      <footer className="app-footer">Uangmu. Ruangmu. Rencanamu.</footer>
+      <AppSidebar contexts={contexts} userLabel={userLabel} />
+      <div className="app-content">
+        <main className="app-main">{children}</main>
+        <footer className="app-footer">Uangmu. Ruangmu. Rencanamu.</footer>
+      </div>
     </div>
   );
 }

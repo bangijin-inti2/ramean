@@ -1,19 +1,10 @@
 .dashboard {
   display: grid;
-  gap: 34px;
-}
-
-.dashboard-heading,
-.section-heading {
-  align-items: end;
-  display: flex;
-  gap: 22px;
-  justify-content: space-between;
+  gap: 20px;
 }
 
 .dashboard h1,
-.dashboard h2,
-.dashboard h3 {
+.dashboard h2 {
   margin: 0;
 }
 
@@ -23,11 +14,11 @@
 }
 
 .dashboard h2 {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
 }
 
-.dashboard h3 {
-  font-size: 1rem;
+.dashboard-heading .muted {
+  margin: 7px 0 0;
 }
 
 .eyebrow {
@@ -39,149 +30,139 @@
   text-transform: uppercase;
 }
 
-.dashboard-heading .muted {
-  margin-bottom: 0;
+.guide-card {
+  padding: 17px 20px;
 }
 
-.context-form {
-  align-items: end;
-  display: flex;
-  gap: 8px;
-  max-width: 460px;
-  width: 100%;
+.guide-card summary {
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
 }
 
-.context-form label {
-  color: var(--muted);
-  font-size: .78rem;
-  left: -9999px;
-  position: absolute;
+.guide-content {
+  padding-top: 20px;
 }
 
-.context-form select {
-  flex: 1;
+.guide-content h2 {
+  margin-bottom: 7px;
 }
 
-.balance-card {
-  align-items: center;
-  background:
-    radial-gradient(ellipse at 85% 20%, rgba(22, 166, 117, .15), transparent 42%),
-    var(--panel);
-  display: flex;
-  justify-content: space-between;
-  min-height: 152px;
-  padding: 24px 28px;
+.guide-content > p {
+  margin: 0;
 }
 
-.balance-card p {
-  margin: 0 0 9px;
-}
-
-.balance-card strong {
-  display: block;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  letter-spacing: -.04em;
-  overflow-wrap: anywhere;
-}
-
-.balance-context {
-  background: rgba(99, 213, 197, .1);
-  border: 1px solid rgba(99, 213, 197, .24);
-  border-radius: 999px;
-  color: var(--accent);
-  font-size: .85rem;
-  padding: 8px 13px;
-}
-
-.dashboard-section {
-  display: grid;
-  gap: 15px;
-}
-
-.section-heading {
-  align-items: end;
-}
-
-.section-heading .eyebrow {
-  margin-bottom: 4px;
-}
-
-.wallet-grid {
+.guide-steps {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 18px;
 }
 
-.wallet-card {
+.guide-steps article {
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.guide-steps strong {
+  color: var(--accent);
+}
+
+.guide-steps p {
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.5;
+  margin: 7px 0 0;
+}
+
+.metric-grid {
   display: grid;
-  gap: 9px;
-  min-height: 132px;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metric-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
   padding: 18px;
 }
 
-.wallet-type {
+.metric-card span {
   color: var(--muted);
-  font-size: .76rem;
-  text-transform: capitalize;
+  font-size: .86rem;
 }
 
-.wallet-card strong {
-  font-size: 1.22rem;
-  margin-top: 3px;
+.metric-card strong {
+  font-size: clamp(1.1rem, 2.4vw, 1.55rem);
   overflow-wrap: anywhere;
 }
 
-.empty-card {
-  padding: 22px;
+.dashboard-columns {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
 }
 
-.empty-card p {
-  margin-bottom: 0;
+.dashboard-panel {
+  min-width: 0;
+  padding: 18px;
 }
 
-.transaction-list {
-  padding: 0 18px;
+.dashboard-panel h2 {
+  margin-bottom: 14px;
 }
 
-.transaction-row {
-  align-items: center;
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.overview-table {
+  border-collapse: collapse;
+  font-size: .84rem;
+  text-align: left;
+  width: 100%;
+}
+
+.overview-table th,
+.overview-table td {
   border-bottom: 1px solid var(--border);
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-  min-height: 70px;
-  padding: 12px 0;
+  padding: 11px 10px;
+  vertical-align: top;
 }
 
-.transaction-row:last-child {
+.overview-table th {
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.overview-table td {
+  overflow-wrap: anywhere;
+}
+
+.overview-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
-.transaction-row > div {
-  display: grid;
-  gap: 5px;
-  min-width: 0;
+.activity-table {
+  min-width: 700px;
 }
 
-.transaction-row > div strong {
-  overflow-wrap: anywhere;
+.empty-card {
+  line-height: 1.55;
+  margin: 0;
+  padding: 12px 0 0;
 }
 
-.transaction-row .muted {
-  font-size: .82rem;
-}
-
-.transaction-amount {
-  flex: 0 0 auto;
-  text-align: right;
-}
-
-.transaction-amount.income {
-  color: #4ade80;
-}
-
-.transaction-amount.expense {
-  color: #fda4af;
+.dashboard-note {
+  font-size: .83rem;
+  margin: 0;
 }
 
 .dashboard-empty {
@@ -190,20 +171,21 @@
   padding: 28px;
 }
 
+@media (max-width: 980px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
-  .dashboard-heading {
-    align-items: stretch;
-    flex-direction: column;
+  .guide-steps,
+  .metric-grid {
+    grid-template-columns: 1fr;
   }
 
-  .context-form {
-    max-width: none;
-  }
-
-  .balance-card {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 20px;
-    padding: 21px;
+  .guide-card,
+  .dashboard-panel,
+  .metric-card {
+    padding: 16px;
   }
 }

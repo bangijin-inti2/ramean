@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
-import { ContextSelector } from "./context-selector";
 import "./dashboard.css";
 
 export const metadata: Metadata = {
@@ -31,6 +30,8 @@ type Transaction = {
   id: string;
   transaction_type: string;
   amount_minor: string | number;
+  wallet_id: string;
+  destination_wallet_id: string | null;
   description: string | null;
   occurred_on: string;
   status: string;
@@ -53,20 +54,14 @@ export default async function DashboardPage({
 }) {
   const supabase = await createClient();
   const { data: claimData } = await supabase.auth.getClaims();
-  const userId = claimData?.claims?.sub;
-  if (!userId) return null;
+  if (!claimData?.claims?.sub) return null;
 
-  const [{ data: profile, error: profileError }, { data: contexts, error: contextsError }] =
-    await Promise.all([
-      supabase.from("profiles").select("display_name").eq("id", userId).maybeSingle(),
-      supabase
-        .from("financial_contexts")
-        .select("id,name,context_type,space_kind,group_purpose")
-        .order("created_at")
-        .order("id"),
-    ]);
+  const { data: contexts, error: contextsError } = await supabase
+    .from("financial_contexts")
+    .select("id,name,context_type,space_kind,group_purpose")
+    .order("created_at")
+    .order("id");
 
-  if (profileError) throw new Error("Profil belum dapat dimuat.");
   if (contextsError) throw new Error("Ruang keuangan belum dapat dimuat.");
 
   const availableContexts = (contexts ?? []) as Context[];
@@ -86,28 +81,32 @@ export default async function DashboardPage({
     );
   }
 
-  const [{ data: rawWallets, error: walletsError }, { data: rawTransactions, error: transactionsError }] =
-    await Promise.all([
-      supabase
-        .from("wallets")
-        .select("id,name,wallet_type,opening_balance_minor")
-        .eq("context_id", selectedContext.id)
-        .order("created_at")
-        .order("id"),
-      supabase
-        .from("transactions")
-        .select("id,transaction_type,amount_minor,description,occurred_on,status")
-        .eq("context_id", selectedContext.id)
-        .order("occurred_on", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(8),
-    ]);
+  const { data: rawWallets, error: walletsError } = await supabase
+    .from("wallets")
+    .select("id,name,wallet_type,opening_balance_minor")
+    .eq("context_id", selectedContext.id)
+    .order("created_at")
+    .order("id");
 
   if (walletsError) throw new Error("Dompet belum dapat dimuat.");
-  if (transactionsError) throw new Error("Transaksi belum dapat dimuat.");
 
   const wallets = (rawWallets ?? []) as Wallet[];
-  const transactions = (rawTransactions ?? []) as Transaction[];
+  const transactions: Transaction[] = [];
+  for (let offset = 0; ; offset += 500) {
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("id,transaction_type,amount_minor,wallet_id,destination_wallet_id,description,occurred_on,status")
+      .eq("context_id", selectedContext.id)
+      .order("occurred_on", { ascending: false })
+      .order("created_at", { ascending: false })
+      .range(offset, offset + 499);
+
+    if (error) throw new Error("Transaksi belum dapat dimuat.");
+    const page = (data ?? []) as Transaction[];
+    transactions.push(...page);
+    if (page.length < 500) break;
+  }
+
   const walletIds = wallets.map((wallet) => wallet.id);
   let ledgerEntries: LedgerEntry[] = [];
 
@@ -137,81 +136,105 @@ export default async function DashboardPage({
     );
   }
   const totalBalance = [...balances.values()].reduce((sum, amount) => sum + amount, BigInt(0));
-  const userName = profile?.display_name || "Teman Ramean";
+  const income = transactions
+    .filter((transaction) => transaction.transaction_type === "income" && transaction.status === "posted")
+    .reduce((sum, transaction) => sum + BigInt(String(transaction.amount_minor)), BigInt(0));
+  const expense = transactions
+    .filter((transaction) => transaction.transaction_type === "expense" && transaction.status === "posted")
+    .reduce((sum, transaction) => sum + BigInt(String(transaction.amount_minor)), BigInt(0));
+  const walletNames = new Map(wallets.map((wallet) => [wallet.id, wallet.name]));
 
   return (
     <div className="dashboard">
       <section className="dashboard-heading">
         <div>
-          <p className="eyebrow">Ringkasan</p>
-          <h1>Halo, {userName}</h1>
-          <p className="muted">Pantau uangmu dalam satu ruang.</p>
+          <p className="eyebrow">Ramean</p>
+          <h1>Ringkasan</h1>
+          <p className="muted">Ruang aktif: {selectedContext.name}</p>
         </div>
-        <ContextSelector contexts={availableContexts} selectedContextId={selectedContext.id} />
       </section>
 
-      <section aria-label="Saldo" className="balance-card surface">
-        <div>
-          <p className="muted">Saldo seluruh dompet</p>
+      <details className="guide-card surface" open={wallets.length === 0}>
+        <summary>Panduan singkat</summary>
+        <div className="guide-content">
+          <h2>Mulai dari sini</h2>
+          <p className="muted">Urutan paling sederhana: buat dompet → catat transaksi → pindahkan dana ke target bila diperlukan.</p>
+          <div className="guide-steps">
+            <article><strong>1. Dompet</strong><p>Tempat saldo berada: tunai, dompet virtual, atau rekening bank.</p></article>
+            <article><strong>2. Transaksi</strong><p>Catat uang masuk, uang keluar, atau perpindahan antar-dompet.</p></article>
+            <article><strong>3. Target dana</strong><p>Pindahkan dana dari dompet sumber ke tujuan dan kaitkan ke pos dana.</p></article>
+          </div>
+        </div>
+      </details>
+
+      <section aria-label="Ringkasan keuangan" className="metric-grid">
+        <article className="metric-card surface">
+          <span>Total balance</span>
           <strong>{formatMoney(totalBalance)}</strong>
-        </div>
-        <span className="balance-context">{selectedContext.name}</span>
+        </article>
+        <article className="metric-card surface">
+          <span>Income recorded</span>
+          <strong>{formatMoney(income)}</strong>
+        </article>
+        <article className="metric-card surface">
+          <span>Expense recorded</span>
+          <strong>{formatMoney(expense)}</strong>
+        </article>
       </section>
 
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Saldo tersedia</p>
-            <h2>Dompet</h2>
-          </div>
-        </div>
-        {wallets.length === 0 ? (
-          <div className="empty-card surface">
-            <h3>Belum ada dompet</h3>
-            <p className="muted">Dompet akan muncul di sini setelah ditambahkan.</p>
-          </div>
-        ) : (
-          <div className="wallet-grid">
-            {wallets.map((wallet) => (
-              <article className="wallet-card surface" key={wallet.id}>
-                <span className="wallet-type">{wallet.wallet_type.replaceAll("_", " ")}</span>
-                <h3>{wallet.name}</h3>
-                <strong>{formatMoney(balances.get(wallet.id) ?? BigInt(0))}</strong>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      <div className="dashboard-columns">
+        <section className="dashboard-panel surface">
+          <h2>Wallet snapshot</h2>
+          {wallets.length === 0 ? (
+            <p className="empty-card muted">Belum ada dompet. Buat dompet pertama dari menu Dompet.</p>
+          ) : (
+            <div className="table-scroll">
+              <table className="overview-table">
+                <thead><tr><th>Wallet</th><th>Type</th><th>Balance</th></tr></thead>
+                <tbody>
+                  {wallets.map((wallet) => (
+                    <tr key={wallet.id}>
+                      <td>{wallet.name}</td>
+                      <td>{wallet.wallet_type.replaceAll("_", " ")}</td>
+                      <td>{formatMoney(balances.get(wallet.id) ?? BigInt(0))}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Aktivitas terkini</p>
-            <h2>Transaksi</h2>
-          </div>
-        </div>
-        {transactions.length === 0 ? (
-          <div className="empty-card surface">
-            <h3>Belum ada transaksi</h3>
-            <p className="muted">Transaksi yang dicatat akan muncul di sini.</p>
-          </div>
-        ) : (
-          <div className="transaction-list surface">
-            {transactions.map((transaction) => (
-              <article className="transaction-row" key={transaction.id}>
-                <div>
-                  <strong>{transaction.description || labelTransaction(transaction.transaction_type)}</strong>
-                  <span className="muted">{transaction.occurred_on}</span>
-                </div>
-                <strong className={`transaction-amount ${transaction.transaction_type}`}>
-                  {transaction.transaction_type === "expense" ? "−" : transaction.transaction_type === "income" ? "+" : ""}
-                  {formatMoney(BigInt(String(transaction.amount_minor)))}
-                </strong>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+        <section className="dashboard-panel surface">
+          <h2>Recent activity</h2>
+          {transactions.length === 0 ? (
+            <p className="empty-card muted">Belum ada transaksi. Catat pemasukan atau pengeluaran pertamamu.</p>
+          ) : (
+            <div className="table-scroll">
+              <table className="overview-table activity-table">
+                <thead>
+                  <tr><th>Date</th><th>Type</th><th>Amount</th><th>From</th><th>To</th><th>Description</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  {transactions.slice(0, 5).map((transaction) => (
+                    <tr key={transaction.id}>
+                      <td>{transaction.occurred_on}</td>
+                      <td>{labelTransaction(transaction.transaction_type)}</td>
+                      <td>{formatMoney(BigInt(String(transaction.amount_minor)))}</td>
+                      <td>{walletNames.get(transaction.wallet_id) ?? "-"}</td>
+                      <td>{transaction.destination_wallet_id ? walletNames.get(transaction.destination_wallet_id) ?? "-" : "-"}</td>
+                      <td>{transaction.description || "-"}</td>
+                      <td>{transaction.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
+
+      <p className="dashboard-note muted">Saldo mengikuti seluruh ledger. Transfer antar-dompet tidak menambah pemasukan atau pengeluaran.</p>
     </div>
   );
 }
