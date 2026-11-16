@@ -1,11 +1,16 @@
 .app-shell {
   display: grid;
-  gap: 34px;
-  grid-template-columns: 238px minmax(0, 1fr);
+  gap: 20px;
+  grid-template-columns: 72px minmax(0, 1fr);
   margin: 0 auto;
   max-width: 1440px;
   min-height: 100vh;
-  padding: 24px 30px;
+  padding: 20px clamp(16px, 3vw, 36px);
+  transition: grid-template-columns 180ms ease;
+}
+
+.app-shell:has(.app-sidebar.is-expanded) {
+  grid-template-columns: 238px minmax(0, 1fr);
 }
 
 .app-sidebar {
@@ -14,16 +19,56 @@
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 48px);
-  padding: 8px 20px 16px 0;
+  overflow: hidden;
+  padding: 8px 10px 16px 0;
   position: sticky;
   top: 24px;
+  transition: width 180ms ease;
 }
 
 .sidebar-body {
+  align-items: center;
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 27px;
+  gap: 20px;
+  width: 100%;
+}
+
+.sidebar-brand {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+
+.sidebar-brand-link {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+  width: 100%;
+}
+
+.sidebar-mark {
+  align-items: center;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 1.25rem;
+  font-weight: 800;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.sidebar-wordmark {
+  display: none;
+}
+
+.sidebar-brand p {
+  display: none;
 }
 
 .sidebar-brand img {
@@ -33,42 +78,70 @@
   width: 100%;
 }
 
-.sidebar-brand p,
-.sidebar-context p,
-.sidebar-context-note {
-  color: var(--muted);
-  font-size: .76rem;
-  line-height: 1.5;
-  margin: 8px 0 0;
-}
-
 .sidebar-context {
+  align-items: center;
   display: grid;
   gap: 8px;
+  justify-items: center;
+  width: 100%;
 }
 
-.sidebar-context label {
+.sidebar-label {
+  display: none;
+}
+
+.sidebar-context-select {
+  position: relative;
+  width: 44px;
+}
+
+.sidebar-context-icon {
+  align-items: center;
   color: var(--muted);
-  font-size: .8rem;
-  font-weight: 650;
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 44px;
 }
 
-.sidebar-context p {
-  margin: 0;
+.sidebar-context select {
+  appearance: none;
+  background: var(--panel);
+  color: transparent;
+  cursor: pointer;
+  font-size: 0;
+  height: 44px;
+  padding: 8px;
+  position: relative;
+  width: 44px;
+  z-index: 1;
+}
+
+.sidebar-context select option {
+  color: var(--text);
+  font-size: .95rem;
 }
 
 .app-nav {
   display: grid;
-  gap: 5px;
+  gap: 6px;
+  width: 100%;
 }
 
 .app-nav a {
+  align-items: center;
   border-left: 3px solid transparent;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 9px 9px 0;
   color: var(--muted);
-  font-size: .9rem;
-  padding: 11px 12px;
+  display: flex;
+  height: 44px;
+  justify-content: center;
   transition: background 120ms ease, color 120ms ease;
+  width: 100%;
 }
 
 .app-nav a:hover,
@@ -82,37 +155,113 @@
   border-left-color: var(--accent);
 }
 
-.sidebar-account {
-  display: grid;
-  gap: 10px;
-  margin-top: auto;
+.app-sidebar.is-expanded .sidebar-body {
+  align-items: stretch;
 }
 
-.theme-toggle {
+.app-sidebar.is-expanded .sidebar-brand {
+  justify-items: start;
+}
+
+.app-sidebar.is-expanded .sidebar-brand-link {
   justify-content: flex-start;
-  min-height: 38px;
+}
+
+.app-sidebar.is-expanded .sidebar-mark {
+  display: none;
+}
+
+.app-sidebar.is-expanded .sidebar-wordmark,
+.app-sidebar.is-expanded .sidebar-brand p {
+  display: block;
+}
+
+.app-sidebar.is-expanded .sidebar-brand p {
+  color: var(--muted);
+  font-size: .76rem;
+  line-height: 1.5;
+  margin: 7px 0 0;
+}
+
+.app-sidebar.is-expanded .sidebar-label {
+  display: block;
+}
+
+.app-sidebar.is-expanded .sidebar-context {
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+.app-sidebar.is-expanded .sidebar-context-select {
+  width: 100%;
+}
+
+.app-sidebar.is-expanded .sidebar-context-icon {
+  display: none;
+}
+
+.app-sidebar.is-expanded .sidebar-context select {
+  appearance: auto;
+  color: var(--text);
+  font-size: .9rem;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.sidebar-context .sidebar-label {
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.app-sidebar.is-expanded .app-nav a {
+  gap: 12px;
+  justify-content: flex-start;
+  padding: 0 12px;
+}
+
+.app-nav a .sidebar-label {
+  font-size: .88rem;
+  font-weight: 550;
+}
+
+.sidebar-account {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: auto;
+  width: 100%;
 }
 
 .sidebar-user {
   color: var(--text);
-  font-size: .85rem;
-  margin: 4px 0 0;
+  font-size: .83rem;
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.sidebar-account form,
-.sidebar-account form button {
   width: 100%;
 }
 
-.signout-button {
-  min-height: 38px;
+.icon-button {
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+  width: 42px;
 }
 
-.sidebar-context-note {
-  margin-top: 0;
+.sidebar-account form {
+  display: flex;
+}
+
+.app-sidebar.is-expanded .sidebar-account {
+  justify-content: flex-start;
+}
+
+.app-sidebar.is-expanded .sidebar-account .sidebar-user {
+  margin-bottom: 4px;
 }
 
 .sidebar-menu-toggle {
@@ -129,7 +278,7 @@
 .app-main {
   flex: 1;
   min-width: 0;
-  padding: 16px 0 48px;
+  padding: 18px 0 40px;
 }
 
 .app-footer {
@@ -141,7 +290,7 @@
 
 .finance-page {
   display: grid;
-  gap: 22px;
+  gap: clamp(16px, 2.4vw, 24px);
 }
 
 .finance-heading {
@@ -152,7 +301,7 @@
 }
 
 .finance-heading h1 {
-  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
   letter-spacing: -.04em;
   margin: 0;
 }
@@ -161,21 +310,16 @@
   margin: 7px 0 0;
 }
 
-.finance-heading .finance-field {
-  max-width: 300px;
-  min-width: 220px;
-}
-
 .finance-columns {
   align-items: start;
   display: grid;
-  gap: 20px;
+  gap: clamp(14px, 2vw, 20px);
   grid-template-columns: minmax(0, 1.2fr) minmax(290px, .8fr);
 }
 
 .finance-panel {
   min-width: 0;
-  padding: 22px;
+  padding: clamp(16px, 2vw, 22px);
 }
 
 .finance-panel h2 {
@@ -185,7 +329,13 @@
 
 .finance-form {
   display: grid;
-  gap: 15px;
+  gap: 14px;
+  min-width: 0;
+}
+
+.extended-workspace {
+  display: grid;
+  gap: 18px;
 }
 
 .finance-field {
@@ -290,6 +440,19 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.inline-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.inline-actions input {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+
 .report-summary article {
   background: var(--panel-raised);
   border: 1px solid var(--border);
@@ -305,15 +468,87 @@
   overflow-wrap: anywhere;
 }
 
+.profile-page {
+  display: grid;
+  gap: 20px;
+  max-width: 860px;
+}
+
+.profile-heading h1 {
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  letter-spacing: -.04em;
+  margin: 0;
+}
+
+.profile-heading > p:last-child {
+  margin: 7px 0 0;
+}
+
+.profile-panel {
+  display: grid;
+  gap: 18px;
+  max-width: 620px;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.profile-readonly {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.profile-readonly span,
+.profile-readonly small {
+  color: var(--muted);
+}
+
+.profile-readonly span {
+  font-size: .82rem;
+  font-weight: 650;
+}
+
+.profile-readonly strong {
+  overflow-wrap: anywhere;
+}
+
+.profile-readonly small {
+  font-size: .78rem;
+}
+
+.profile-save {
+  justify-self: start;
+  min-width: 150px;
+}
+
+@media (max-width: 980px) {
+  .finance-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .report-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 800px) {
   .app-shell {
     gap: 22px;
-    grid-template-columns: 210px minmax(0, 1fr);
-    padding: 20px;
+    grid-template-columns: 68px minmax(0, 1fr);
   }
 
-  .finance-columns {
-    grid-template-columns: 1fr;
+  .app-shell:has(.app-sidebar.is-expanded) {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+}
+
+@media (hover: none) and (min-width: 641px) {
+  .app-shell {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+
+  .app-sidebar .app-nav a {
+    min-height: 46px;
   }
 }
 
@@ -327,23 +562,102 @@
     border-bottom: 1px solid var(--border);
     border-right: 0;
     min-height: auto;
+    overflow: visible;
     padding: 0 0 12px;
     position: static;
+    width: 100%;
   }
 
   .sidebar-menu-toggle {
     display: inline-flex;
-    min-height: 38px;
+    min-height: 40px;
     width: 100%;
   }
 
   .sidebar-body {
+    align-items: stretch;
     display: none;
+    gap: 18px;
     padding: 18px 0 4px;
   }
 
   .app-sidebar.is-open .sidebar-body {
     display: flex;
+  }
+
+  .sidebar-brand {
+    justify-items: start;
+  }
+
+  .sidebar-brand-link {
+    justify-content: flex-start;
+  }
+
+  .sidebar-mark {
+    display: none;
+  }
+
+  .sidebar-wordmark,
+  .sidebar-brand p {
+    display: block;
+  }
+
+  .sidebar-brand p {
+    color: var(--muted);
+    font-size: .76rem;
+    margin: 7px 0 0;
+  }
+
+  .sidebar-context,
+  .app-sidebar.is-expanded .sidebar-context {
+    align-items: stretch;
+    justify-items: stretch;
+  }
+
+  .sidebar-context .sidebar-label,
+  .app-sidebar.is-expanded .sidebar-context .sidebar-label {
+    display: block;
+  }
+
+  .sidebar-context-select,
+  .app-sidebar.is-expanded .sidebar-context-select {
+    width: 100%;
+  }
+
+  .sidebar-context-icon,
+  .app-sidebar.is-expanded .sidebar-context-icon {
+    display: none;
+  }
+
+  .sidebar-context select,
+  .app-sidebar.is-expanded .sidebar-context select {
+    appearance: auto;
+    color: var(--text);
+    font-size: .9rem;
+    padding: 10px 12px;
+    width: 100%;
+  }
+
+  .app-nav a,
+  .app-sidebar.is-expanded .app-nav a {
+    justify-content: flex-start;
+    padding: 0 12px;
+  }
+
+  .app-nav a .sidebar-label,
+  .app-sidebar.is-expanded .app-nav a .sidebar-label {
+    display: inline;
+  }
+
+  .sidebar-account,
+  .app-sidebar.is-expanded .sidebar-account {
+    justify-content: flex-start;
+  }
+
+  .sidebar-user,
+  .app-sidebar.is-expanded .sidebar-user {
+    display: block;
+    width: 100%;
   }
 
   .app-content {
@@ -359,14 +673,11 @@
     flex-direction: column;
   }
 
-  .finance-heading .finance-field {
-    max-width: none;
-  }
-
   .finance-panel {
-    padding: 17px;
+    padding: 16px;
   }
 
+  .finance-filter,
   .report-summary {
     grid-template-columns: 1fr;
   }

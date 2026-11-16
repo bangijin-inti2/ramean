@@ -25,7 +25,7 @@ export default async function LoginPage({
             className="auth-logo"
             priority
           />
-          <p className="eyebrow">Secure access</p>
+          <p className="eyebrow">Akun Ramean</p>
           <h1>Masuk ke Ramean.</h1>
           <p className="muted">Kelola uang dan rencanamu dalam satu tempat.</p>
         </div>

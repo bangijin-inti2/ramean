@@ -86,15 +86,18 @@ export function LoginForm({ callbackError }: { callbackError: boolean }) {
 
   return (
     <div className="auth-card surface">
-      <button
-        className="google-button primary-button"
-        disabled={busy}
-        onClick={signInWithGoogle}
-        type="button"
-      >
-        <GoogleMark />
-        Lanjutkan dengan Google
-      </button>
+      <div className="auth-google-action">
+        <button
+          aria-label="Lanjutkan dengan Google"
+          className="google-button primary-button"
+          disabled={busy}
+          onClick={signInWithGoogle}
+          title="Lanjutkan dengan Google"
+          type="button"
+        >
+          <GoogleMark />
+        </button>
+      </div>
       <p className="auth-hint">Cara masuk utama. Email dan password tetap tersedia di bawah.</p>
 
       <div className="auth-divider"><span>atau dengan email</span></div>
@@ -155,11 +158,25 @@ export function LoginForm({ callbackError }: { callbackError: boolean }) {
         </label>
         {error && <p className="error-message" role="alert">{error}</p>}
         {notice && <p className="success-message" role="status">{notice}</p>}
-        <button className="primary-button submit-button" disabled={busy} type="submit">
-          {busy ? "Memproses..." : mode === "login" ? "Login" : "Buat akun"}
+        <button
+          aria-label={busy ? "Memproses..." : mode === "login" ? "Masuk" : "Buat akun"}
+          className={`primary-button submit-button${mode === "login" ? " auth-login-icon" : ""}`}
+          disabled={busy}
+          title={mode === "login" ? "Masuk" : undefined}
+          type="submit"
+        >
+          {busy ? <span aria-hidden="true" className="button-spinner" /> : mode === "login" ? <LoginMark /> : "Buat akun"}
         </button>
       </form>
     </div>
+  );
+}
+
+function LoginMark() {
+  return (
+    <svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20">
+      <path d="M13 5h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5M10 8l4 4-4 4m4-4H3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+    </svg>
   );
 }
 
