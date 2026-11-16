@@ -1,7 +1,7 @@
 .app-shell {
   display: grid;
-  gap: 20px;
-  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 16px;
+  grid-template-columns: 44px minmax(0, 1fr);
   margin: 0 auto;
   max-width: 1440px;
   min-height: 100vh;
@@ -10,7 +10,7 @@
 }
 
 .app-shell:has(.app-sidebar.is-expanded) {
-  grid-template-columns: 238px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
 }
 
 .app-sidebar {
@@ -20,7 +20,7 @@
   flex-direction: column;
   min-height: calc(100vh - 48px);
   overflow: hidden;
-  padding: 8px 10px 16px 0;
+  padding: 8px 0 16px;
   position: sticky;
   top: 24px;
   transition: width 180ms ease;
@@ -36,9 +36,7 @@
 }
 
 .sidebar-brand {
-  display: grid;
-  justify-items: center;
-  width: 100%;
+  display: none;
 }
 
 .sidebar-brand-link {
@@ -49,22 +47,8 @@
   width: 100%;
 }
 
-.sidebar-mark {
-  align-items: center;
-  background: var(--panel-raised);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--accent);
-  display: inline-flex;
-  font-size: 1.25rem;
-  font-weight: 800;
-  height: 42px;
-  justify-content: center;
-  width: 42px;
-}
-
 .sidebar-wordmark {
-  display: none;
+  display: block;
 }
 
 .sidebar-brand p {
@@ -92,20 +76,20 @@
 
 .sidebar-context-select {
   position: relative;
-  width: 44px;
+  width: 40px;
 }
 
 .sidebar-context-icon {
   align-items: center;
   color: var(--muted);
   display: flex;
-  height: 44px;
+  height: 40px;
   justify-content: center;
   left: 0;
   pointer-events: none;
   position: absolute;
   top: 0;
-  width: 44px;
+  width: 40px;
 }
 
 .sidebar-context select {
@@ -114,10 +98,10 @@
   color: transparent;
   cursor: pointer;
   font-size: 0;
-  height: 44px;
+  height: 40px;
   padding: 8px;
   position: relative;
-  width: 44px;
+  width: 40px;
   z-index: 1;
 }
 
@@ -138,7 +122,7 @@
   border-radius: 0 9px 9px 0;
   color: var(--muted);
   display: flex;
-  height: 44px;
+  height: 40px;
   justify-content: center;
   transition: background 120ms ease, color 120ms ease;
   width: 100%;
@@ -160,15 +144,12 @@
 }
 
 .app-sidebar.is-expanded .sidebar-brand {
+  display: grid;
   justify-items: start;
 }
 
 .app-sidebar.is-expanded .sidebar-brand-link {
   justify-content: flex-start;
-}
-
-.app-sidebar.is-expanded .sidebar-mark {
-  display: none;
 }
 
 .app-sidebar.is-expanded .sidebar-wordmark,
@@ -246,10 +227,10 @@
 }
 
 .icon-button {
-  height: 42px;
-  min-height: 42px;
+  height: 40px;
+  min-height: 40px;
   padding: 0;
-  width: 42px;
+  width: 40px;
 }
 
 .sidebar-account form {
@@ -532,19 +513,18 @@
 
 @media (max-width: 800px) {
   .app-shell {
-    gap: 22px;
-    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 16px;
+    grid-template-columns: 44px minmax(0, 1fr);
   }
 
   .app-shell:has(.app-sidebar.is-expanded) {
-    grid-template-columns: 210px minmax(0, 1fr);
+    grid-template-columns: 200px minmax(0, 1fr);
   }
-
 }
 
 @media (hover: none) and (min-width: 641px) {
   .app-shell {
-    grid-template-columns: 68px minmax(0, 1fr);
+    grid-template-columns: 44px minmax(0, 1fr);
   }
 
   .app-sidebar .app-nav a {
@@ -586,15 +566,12 @@
   }
 
   .sidebar-brand {
+    display: grid;
     justify-items: start;
   }
 
   .sidebar-brand-link {
     justify-content: flex-start;
-  }
-
-  .sidebar-mark {
-    display: none;
   }
 
   .sidebar-wordmark,

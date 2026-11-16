@@ -231,7 +231,6 @@ export function AppSidebar({
       <div className="sidebar-body">
         <div className="sidebar-brand">
           <Link aria-label="Ramean, ringkasan" className="sidebar-brand-link" href="/dashboard">
-            <span aria-hidden="true" className="sidebar-mark">R</span>
             <Image
               alt="Ramean"
               className="sidebar-wordmark"
