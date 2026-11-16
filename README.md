@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ramean Web (Next.js beta)
 
-## Getting Started
+Folder ini berisi implementasi Next.js yang terpisah dari versi Streamlit awal di folder induk. Next.js adalah target web untuk publish ke Vercel. Implementasi ruang bersama, setoran QR, dan arisan sudah tersedia, tetapi versi Next.js masih beta dan belum setara seluruh cakupan Streamlit; UAT dua akun masih diperlukan.
 
-First, run the development server:
+## Menjalankan lokal
 
-```bash
+```powershell
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Isi environment lokal berdasarkan `.env.example`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (atau nama legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Gunakan key publik Supabase; jangan pernah memasukkan service-role key ke variabel `NEXT_PUBLIC_*` atau ke repository.
 
-## Learn More
+## Pemeriksaan
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+npm run lint
+npm run typecheck
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pada audit 16 November 2026, lint, typecheck, dan production build lulus setelah melengkapi modul ruang bersama, setoran QR, serta arisan. Build sudah di-deploy ke [Vercel Production](https://ramean-psi.vercel.app); smoke test publik menghasilkan `/login` 200 dan `/dashboard` tanpa sesi 307 ke `/login`. Login email/password dan Google OAuth production berhasil diuji hingga kembali ke dashboard. Pengujian refresh sesi, logout, dan alur data dua akun masih perlu dilakukan.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Konfigurasi dan daftar verifikasi deployment ada di [DEPLOYMENT.md](DEPLOYMENT.md). Setelah perubahan ini dipush, pastikan deployment Vercel terbaru berstatus Ready dan cocok dengan commit yang dipush.

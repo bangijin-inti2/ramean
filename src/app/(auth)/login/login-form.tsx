@@ -87,7 +87,7 @@ export function LoginForm({ callbackError }: { callbackError: boolean }) {
   return (
     <div className="auth-card surface">
       <button
-        className="google-button secondary-button"
+        className="google-button primary-button"
         disabled={busy}
         onClick={signInWithGoogle}
         type="button"
@@ -95,7 +95,7 @@ export function LoginForm({ callbackError }: { callbackError: boolean }) {
         <GoogleMark />
         Lanjutkan dengan Google
       </button>
-      <p className="auth-hint">Untuk akun baru maupun akun yang sudah terdaftar.</p>
+      <p className="auth-hint">Cara masuk utama. Email dan password tetap tersedia di bawah.</p>
 
       <div className="auth-divider"><span>atau dengan email</span></div>
       <div className="auth-tabs" role="tablist" aria-label="Metode email">

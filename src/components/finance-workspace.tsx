@@ -11,6 +11,7 @@ import {
 } from "@/lib/finance";
 import { useWorkspace } from "@/lib/use-workspace";
 import { createClient } from "@/lib/supabase/client";
+import { SharedSpace } from "./shared-space";
 
 type Section = "wallets" | "transactions" | "posts" | "budgets" | "reports" | "space";
 type Operation = "income" | "expense" | "transfer" | "post_transfer" | "share_allocation";
@@ -135,7 +136,10 @@ export function FinanceWorkspace({ section }: { section: Section }) {
       )}
       {section === "reports" && <ReportsSection {...{ workspace }} />}
       {section === "space" && (
-        <SpaceSection {...{ workspace, canWrite, mutate }} />
+        <>
+          <SpaceSection {...{ workspace, canWrite, mutate }} />
+          <SharedSpace workspace={workspace} />
+        </>
       )}
     </div>
   );
